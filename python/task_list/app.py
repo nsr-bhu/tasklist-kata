@@ -1,17 +1,19 @@
+from datetime import datetime
 from typing import Dict, List
 
 from task_list.console import Console
 from task_list.task import Task
 from task_list.command import Command
 
+
 class TaskCollection:
     def __init__(self):
         self.tasks: Dict[str, List[Task]] = dict()
 
-    def get_tasks_with_deadline(self):
+    def get_tasks_with_deadline(self, deadline: datetime):
         tasks_with_deadline: Dict[str, List[Task]] = dict()
         for project, task_list in self.tasks.items():
-            task_list_with_deadline = [t for t in task_list if t.has_deadline]
+            task_list_with_deadline = [t for t in task_list if t.has_deadline and t.deadline == deadline]
             if (task_list_with_deadline):
                 tasks_with_deadline[project] = task_list_with_deadline
         return tasks_with_deadline
@@ -60,7 +62,8 @@ class TaskList:
             self.error(command.name)
 
     def today(self):
-        tasks_with_deadline = self.task_collection.get_tasks_with_deadline()
+        today = datetime.now().date()
+        tasks_with_deadline = self.task_collection.get_tasks_with_deadline(today)
         if len(tasks_with_deadline.items()) == 0:
             self.console.print("Nothing to do")
             self.console.print("")
@@ -88,7 +91,9 @@ class TaskList:
     def deadline(self, argumentString: str):
         id = int(argumentString.split(" ")[0])
         task = self.task_collection.get_task(id)
-        task.has_deadline = True
+        deadlineStr = argumentString.split(" ")[1]
+        deadline = datetime.strptime(deadlineStr, "%Y-%m-%d").date()
+        task.set_deadline(deadline)
 
     def add_project(self, name: str) -> None:
         self.task_collection.tasks[name] = []
