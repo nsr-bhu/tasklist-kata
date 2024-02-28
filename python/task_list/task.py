@@ -3,7 +3,6 @@ from datetime import datetime
 
 class Task:
 
-
     def __init__(self, id_: int, description: str, done: bool) -> None:
         self.id = id_
         self.description = description
@@ -23,10 +22,10 @@ class Task:
         return self.deadline != None  
 
 class TaskCollection:
+
     def __init__(self):
         self.tasks: Dict[str, List[Task]] = dict()
         self.last_id: int = 0
-
 
     def get_tasks_with_deadline(self, deadline: datetime):
         tasks_with_deadline: Dict[str, List[Task]] = dict()
