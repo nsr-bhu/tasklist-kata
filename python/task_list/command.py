@@ -7,8 +7,8 @@ from task_list.console import Console
 
 class Command:
 
-    def __init__(self, name: str, argumentString: str, task_collection: TaskCollection):
-        self.name = name
+    def __init__(self, argumentString: str, task_collection: TaskCollection):
+        #self.name = name
         self.argumentString = argumentString
         self.task_collection = task_collection
 
@@ -35,17 +35,17 @@ class CommandParser:
             self.argumentString = parts[1]
 
         if (self.name == "deadline"):
-           return DeadlineCommand(self.name, self.argumentString, self.task_collection)
+           return DeadlineCommand(self.argumentString, self.task_collection)
         elif(self.name == "show"):
-           return ShowCommand(self.name, self.argumentString, self.task_collection, self.console)
+           return ShowCommand(self.argumentString, self.task_collection, self.console)
         elif(self.name == "today"):
-           return TodayCommand(self.name, self.argumentString, self.task_collection, self.console)
+           return TodayCommand(self.argumentString, self.task_collection, self.console)
         elif(self.name == "add"):
-           return AddCommand(self.name, self.argumentString, self.task_collection, self.console)
+           return AddCommand(self.argumentString, self.task_collection, self.console)
         elif(self.name == "check"):
-           return CheckCommand(self.name, self.argumentString, self.task_collection, self.console)
+           return CheckCommand(self.argumentString, self.task_collection, self.console)
         elif(self.name == "uncheck"):
-           return UncheckCommand(self.name, self.argumentString, self.task_collection, self.console)
+           return UncheckCommand(self.argumentString, self.task_collection, self.console)
         elif(self.name == "help"):
            return HelpCommand(self.console)
         else:    
@@ -79,8 +79,8 @@ class HelpCommand(Command):
    
 class ShowCommand(Command):
 
-    def __init__(self, name: str, argumentString: str, task_collection:  TaskCollection, console: Console):
-        super().__init__(name, argumentString, task_collection)
+    def __init__(self, argumentString: str, task_collection:  TaskCollection, console: Console):
+        super().__init__(argumentString, task_collection)
         self.console = console
     
     def execute(self) -> None:
@@ -92,8 +92,8 @@ class ShowCommand(Command):
    
 class DeadlineCommand(Command): 
 
-    def __init__(self, name: str, argumentString: str, task_collection: TaskCollection):
-        super().__init__(name, argumentString, task_collection)
+    def __init__(self, argumentString: str, task_collection: TaskCollection):
+        super().__init__(argumentString, task_collection)
         self.id = int(argumentString.split(" ")[0])
         deadlineStr = argumentString.split(" ")[1]
         self.deadline = datetime.strptime(deadlineStr, "%Y-%m-%d").date()
@@ -104,8 +104,8 @@ class DeadlineCommand(Command):
 
 class TodayCommand(Command): 
 
-    def __init__(self, name: str, argumentString: str, task_collection:  TaskCollection, console: Console):
-        super().__init__(name, argumentString, task_collection)
+    def __init__(self, argumentString: str, task_collection:  TaskCollection, console: Console):
+        super().__init__(argumentString, task_collection)
         self.console = console
     
     def execute(self) -> None:
@@ -121,8 +121,8 @@ class TodayCommand(Command):
 
 class AddCommand(Command):
 
-    def __init__(self, name: str, argumentString: str, task_collection:  TaskCollection, console: Console):
-        super().__init__(name, argumentString, task_collection)
+    def __init__(self, argumentString: str, task_collection:  TaskCollection, console: Console):
+        super().__init__(argumentString, task_collection)
         self.console = console
     
     def execute(self) -> None:
@@ -148,8 +148,8 @@ class AddCommand(Command):
 class SetDoneCommand(Command):
     DONE: bool = True
 
-    def __init__(self, name: str, argumentString: str, task_collection:  TaskCollection, console: Console, done: bool):
-        super().__init__(name, argumentString, task_collection)
+    def __init__(self, argumentString: str, task_collection:  TaskCollection, console: Console, done: bool):
+        super().__init__(argumentString, task_collection)
         self.console = console
         self.done = done
         self.id_string = argumentString
@@ -165,11 +165,11 @@ class SetDoneCommand(Command):
 
 class CheckCommand(SetDoneCommand):
 
-    def __init__(self, name: str, argumentString: str, task_collection:  TaskCollection, console: Console):
-        super().__init__(name, argumentString, task_collection, console, self.DONE)
+    def __init__(self, argumentString: str, task_collection:  TaskCollection, console: Console):
+        super().__init__(argumentString, task_collection, console, self.DONE)
 
 class UncheckCommand(SetDoneCommand):
 
-    def __init__(self, name: str, argumentString: str, task_collection:  TaskCollection, console: Console):
-        super().__init__(name, argumentString, task_collection, console, not self.DONE)
+    def __init__(self, argumentString: str, task_collection:  TaskCollection, console: Console):
+        super().__init__(argumentString, task_collection, console, not self.DONE)
 
