@@ -52,6 +52,7 @@ class CommandParser:
            return ErrorCommand(self.name, self.console)
         
 class ErrorCommand(Command):
+
     def __init__(self, name: str, console: Console):
         self.command = name          
         self.console = console
@@ -61,6 +62,7 @@ class ErrorCommand(Command):
         self.console.print()
 
 class HelpCommand(Command):
+    
     def __init__(self, console: Console):
         self.console = console
 
