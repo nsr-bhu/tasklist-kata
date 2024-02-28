@@ -17,6 +17,7 @@ class ApplicationTest(unittest.TestCase):
         self.timer.start()
 
     def tearDown(self):
+        self.execute("quit")
         self.timer.cancel()
         self.proc.stdout.close()
         self.proc.stdin.close()
@@ -64,8 +65,6 @@ class ApplicationTest(unittest.TestCase):
             "  [ ] 8: Interaction-Driven Design",
             "")
 
-        self.execute("quit")
-
     def test_today_shows_task_with_deadline_today(self):
         self.execute("add project todos")
         self.execute("add task todos Do the thing.")
@@ -78,33 +77,26 @@ class ApplicationTest(unittest.TestCase):
             ""
         )
 
-        self.execute("quit")
-
-    def test_today_does_not_show_task_with_deadline_tomorrow(self):
+    def test_today_does_not_show_task_with_deadline_before_or_after_today(self):
         self.execute("add project todos")
+        self.execute("add task todos Do the thing yesterday.")
+        self.execute(f"deadline 1 {self.yesterdays_date()}")
         self.execute("add task todos Do the thing tomorrow.")
-        self.execute(f"deadline 1 {self.tomorrows_date()}")
+        self.execute(f"deadline 2 {self.tomorrows_date()}")
         self.execute("today")
-        
-        self.read_lines("Nothing to do", "")
 
-        self.execute("quit")
-    
+        self.read_lines("Nothing to do", "")
 
     def test_today_shows_no_task_if_none_are_today(self):
         self.execute("today")
         self.read_lines("Nothing to do",
                         "")
 
-        self.execute("quit") 
-
     def test_today_does_not_show_task_without_deadline(self):
         self.execute("add project todos")
         self.execute("add task todos Do the thing any time")
         self.execute("today")
         self.read_lines("Nothing to do", "")
-
-        self.execute("quit")
 
 
     #Test helpers
@@ -129,4 +121,8 @@ class ApplicationTest(unittest.TestCase):
     
     def tomorrows_date(self):
         tomorrow = datetime.now() + timedelta(days=1); 
+        return str(tomorrow.strftime('%Y-%m-%d'))
+
+    def yesterdays_date(self):
+        tomorrow = datetime.now() + timedelta(days=-1); 
         return str(tomorrow.strftime('%Y-%m-%d'))
