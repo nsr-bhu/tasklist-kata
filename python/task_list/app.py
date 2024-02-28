@@ -1,6 +1,3 @@
-from datetime import datetime
-from typing import Dict, List
-
 from task_list.console import Console
 from task_list.task import Task, TaskCollection
 from task_list.command import Command, CommandParser
